@@ -134,8 +134,15 @@ class CO456Protocol(chess.engine.Protocol):
             def start(self, engine: CO456Protocol) -> None:
                 if "color" in options:
                     engine.send_line(options.get("color"))
-                    self.result.set_result(None)
-                    self.set_finished()
+                    if options.get("color") == "black":
+                        self.result.set_result(None)
+                        self.set_finished()
+
+            def line_received(self, engine: CO456Protocol, line: str) -> None:
+                logging.info("CO456 Protocol received " + line)
+
+                self.result.set_result(None)
+                self.set_finished()
 
         return await self.communicate(ConfigureCommand)
 
@@ -144,9 +151,7 @@ class CO456Protocol(chess.engine.Protocol):
                    options: ConfigMapping = {}) -> PlayResult:
         class PlayCommand(chess.engine.BaseCommand[CO456Protocol, PlayResult]):
             def start(self, engine: CO456Protocol) -> None:
-                if not board.move_stack:
-                    engine.send_line("first_move")
-                else:
+                if board.move_stack:
                     engine.send_line(board.move_stack[-1].uci())
 
             def line_received(self, engine: CO456Protocol, line: str) -> None:
