@@ -154,7 +154,7 @@ class CO456Protocol(chess.engine.Protocol):
         class PlayCommand(chess.engine.BaseCommand[CO456Protocol, PlayResult]):
             def start(self, engine: CO456Protocol) -> None:
                 if engine.first_move:
-                    self.result.set_result(PlayResult(chess.Move.from_uci(engine.first_move)))
+                    self.result.set_result(PlayResult(chess.Move.from_uci(engine.first_move), None))
                     engine.first_move = ""
                     self.set_finished()
                 elif board.move_stack:
