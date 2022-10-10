@@ -157,9 +157,7 @@ class CO456Protocol(chess.engine.Protocol):
             def line_received(self, engine: CO456Protocol, line: str) -> None:
                 logging.info("CO456 Protocol received " + line)
 
-                moves = list(board.legal_moves)
-                moves.sort(key=str)
-                self.result.set_result(PlayResult(moves[0], None))
+                self.result.set_result(PlayResult(chess.Move.from_uci(line), None))
                 self.set_finished()
 
         return await self.communicate(PlayCommand)
