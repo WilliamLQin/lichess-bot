@@ -111,6 +111,7 @@ class FirstMove(ExampleEngine):
 class CO456Protocol(chess.engine.Protocol):
     def __init__(self) -> None:
         super().__init__()
+        self.first_move = ""
 
     async def initialize(self) -> None:
         class InitializeCommand(chess.engine.BaseCommand[CO456Protocol, None]):
@@ -129,7 +130,7 @@ class CO456Protocol(chess.engine.Protocol):
     async def ping(self) -> None:
         pass
 
-    async def configure(self, options: ConfigMapping) -> None:
+    async def configure(self, options: ConfigMapping) -> str:
         class ConfigureCommand(chess.engine.BaseCommand[CO456Protocol, None]):
             def start(self, engine: CO456Protocol) -> None:
                 if "color" in options:
@@ -141,6 +142,7 @@ class CO456Protocol(chess.engine.Protocol):
             def line_received(self, engine: CO456Protocol, line: str) -> None:
                 logging.info("CO456 Protocol received " + line)
 
+                engine.first_move = line
                 self.result.set_result(None)
                 self.set_finished()
 
@@ -151,7 +153,11 @@ class CO456Protocol(chess.engine.Protocol):
                    options: ConfigMapping = {}) -> PlayResult:
         class PlayCommand(chess.engine.BaseCommand[CO456Protocol, PlayResult]):
             def start(self, engine: CO456Protocol) -> None:
-                if board.move_stack:
+                if engine.first_move:
+                    self.result.set_result(PlayResult(chess.Move.from_uci(engine.first_move)))
+                    engine.first_move = ""
+                    self.set_finished()
+                elif board.move_stack:
                     engine.send_line(board.move_stack[-1].uci())
 
             def line_received(self, engine: CO456Protocol, line: str) -> None:
