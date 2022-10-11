@@ -59,7 +59,7 @@ class MinimalEngine(EngineWrapper):
             "name": self.engine_name
         }
 
-    def search(self, board, time_limit, ponder, draw_offered, root_moves):
+    def search(self, board, time_limit, ponder, draw_offered):
         """
         The method to be implemented in your homemade engine
 
@@ -163,7 +163,10 @@ class CO456Protocol(chess.engine.Protocol):
             def line_received(self, engine: CO456Protocol, line: str) -> None:
                 logging.info("CO456 Protocol received " + line)
 
-                self.result.set_result(PlayResult(chess.Move.from_uci(line), None))
+                if line == "invalid":
+                    self.result.set_result(PlayResult(board.legal_moves[0], resigned=True))
+                else:
+                    self.result.set_result(PlayResult(chess.Move.from_uci(line), None))
                 self.set_finished()
 
         return await self.communicate(PlayCommand)
