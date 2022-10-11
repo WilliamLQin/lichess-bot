@@ -164,7 +164,7 @@ class CO456Protocol(chess.engine.Protocol):
                 logging.info("CO456 Protocol received " + line)
 
                 if line == "invalid":
-                    self.result.set_result(PlayResult(next(iter(board.legal_moves)), resigned=True))
+                    self.result.set_result(PlayResult(next(iter(board.legal_moves)), resigned=True), None)
                 else:
                     self.result.set_result(PlayResult(chess.Move.from_uci(line), None))
                 self.set_finished()
