@@ -200,6 +200,6 @@ class CO456Engine(EngineWrapper):
         self.engine.configure({"color": msg})
 
     # Your turn!
-    def search(self, board, time_limit, ponder, draw_offered):
+    def search(self, board, time_limit, ponder, draw_offered, root_moves):
         result = self.engine.play(board, time_limit)
         return result
