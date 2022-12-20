@@ -1,0 +1,2 @@
+brain-empty-magnus-capturesen
+travis-antichess

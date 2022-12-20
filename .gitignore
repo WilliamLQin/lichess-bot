@@ -1,6 +1,10 @@
 config.yml
+config_bot1.yml
+config_bot2.yml
 __pycache__
 test_bot/__pycache__
 /engines/*
 !/engines/README.md
 .idea
+tournament_bot_api_tokens.txt
+tournament_challenge_api_tokens.txt
